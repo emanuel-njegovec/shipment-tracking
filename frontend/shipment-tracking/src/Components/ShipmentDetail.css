@@ -1,0 +1,17 @@
+.disabled-input.ant-input[disabled] {
+    color: black; /* Replace 'red' with the color you want */
+}
+/* Your custom CSS file, e.g., styles.css */
+.ant-input-number-disabled {
+    background-color: #f0f0f0; /* Change the background color */
+    color: black; /* Change the text color */
+}
+
+.ant-input-number-disabled .ant-input-number-input {
+    color: black; /* Ensure the text inside the input also changes color */
+}
+
+.ant-picker.ant-picker-disabled,
+.ant-picker.ant-picker-disabled .ant-picker-input > input {
+    color: black; /* Change this to your desired text color for disabled state */
+}

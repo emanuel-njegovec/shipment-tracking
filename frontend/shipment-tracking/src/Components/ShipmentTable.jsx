@@ -10,7 +10,7 @@ function ShipmentTable() {
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
-            pageSize: 5
+            pageSize: 5,
         }
     });
 
@@ -31,15 +31,24 @@ function ShipmentTable() {
             key: 'status',
         },
         {
+            title: 'Order ID',
+            dataIndex: 'order',
+            key: 'order',
+            render: (order) => order.map(o => o.id).join(', '),
+        },
+        {
+            title: 'Customer',
+            dataIndex: 'relatedCustomer',
+            key: 'relatedCustomer',
+            render: (customer) => customer.name,
+        },
+        {
             title: 'Actions',
             key: 'actions',
             render: (text, record) => (
                 <span>
                     <Button type="primary" style={{marginRight: 16}}>
-                        <Link to={`/shipmentTracking/${record.id}`}>View</Link>
-                    </Button>
-                    <Button type="primary" >
-                        <Link to={`/shipmentTracking/${record.id}/edit`}>Edit</Link>
+                        <Link to={`/shipmentTracking/${record.id}`}>Open</Link>
                     </Button>
                 </span>
             ),
@@ -65,7 +74,7 @@ function ShipmentTable() {
         setTableParams({
             pagination: {
                 current: pagination.current,
-                pageSize: pagination.pageSize
+                pageSize: pagination.pageSize,
             }
         });
     }
@@ -73,12 +82,14 @@ function ShipmentTable() {
     return (
         <div>
             <h1>Shipment List</h1>
-            <Link to="/shipment/create">Create New Shipment</Link>
+            <Button type="primary" style={{marginBottom: 16}}>
+                <Link to="/shipmentTracking/new">Create New Shipment</Link>
+            </Button>
             <Table
                 dataSource={shipments} 
                 rowKey="id"
                 columns={columns} 
-                pagination={tableParams.pagination}
+                pagination={{...tableParams.pagination, position: ['bottomCenter']}}
                 onChange={handleTableChange}/>
         </div>
     );

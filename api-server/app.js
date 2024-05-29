@@ -52,6 +52,7 @@ app.get('/shipmentTracking/v1/shipmentTracking', (req, res) => {
 app.get('/shipmentTracking/v1/shipmentTracking/:id', (req, res) => {
     const id = req.params.id;
     const tracking = shipmentTracking.find(tracking => tracking.id === id);
+    console.log(tracking);
     if (tracking) {
         res.json(tracking);
     } else {
