@@ -7,7 +7,6 @@ const { Option } = Select;
 
 
 function ShipmentTable() {
-
     const [shipments, setShipments] = useState([]);
     const [customerSearch, setCustomerSearch] = useState('');
     const [orderSearch, setOrderSearch] = useState('');
@@ -31,6 +30,11 @@ function ShipmentTable() {
             key: 'carrier',
         },
         {
+            title: 'Tracking code',
+            dataIndex: 'trackingCode',
+            key: 'trackingCode',
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -39,13 +43,18 @@ function ShipmentTable() {
             title: 'Order ID',
             dataIndex: 'order',
             key: 'order',
-            render: (order) => order.map(o => o.id).join(', '),
+            render: (order) => order.map(o => o.name).join(', '),
         },
         {
             title: 'Customer',
             dataIndex: 'relatedCustomer',
             key: 'relatedCustomer',
             render: (customer) => customer.name,
+        },
+        {
+            title: 'Weight',
+            dataIndex: 'weight',
+            key: 'weight',
         },
         {
             title: '',
@@ -84,6 +93,7 @@ function ShipmentTable() {
     const handleTableChange = (pagination) => {
         setTableParams({
             pagination: {
+                ...pagination,
                 current: pagination.current,
                 pageSize: pagination.pageSize,
             }
@@ -149,7 +159,12 @@ function ShipmentTable() {
                 dataSource={shipments} 
                 rowKey="id"
                 columns={columns} 
-                pagination={{...tableParams.pagination, position: ['bottomCenter']}}
+                pagination={{
+                    ...tableParams.pagination,
+                    position: ['bottomCenter'],
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '20', '50']
+                }}
                 onChange={handleTableChange}/>
             <Button type="primary" style={{marginBottom: 16}}>
                 <Link to="/shipmentTracking/new">Create New Shipment</Link>

@@ -15,3 +15,6 @@
 .ant-picker.ant-picker-disabled .ant-picker-input > input {
     color: black; /* Change this to your desired text color for disabled state */
 }
+.disabled-input {
+    width: 100%;
+}

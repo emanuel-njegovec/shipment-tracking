@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Form, Input, DatePicker, InputNumber, Typography, Layout, Card } from "antd";
+import { Button, Form, Input, DatePicker, InputNumber, Typography, Layout, Card, Select, message } from "antd";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import "./ShipmentDetail.css";
 const { Title } = Typography;
 const { Header, Content, Sider } = Layout;
+const { Option } = Select;
 
 
 function ShipmentDetail() {
@@ -14,12 +15,25 @@ function ShipmentDetail() {
     const [shipment, setShipment] = useState({});
     const [formDisabled, setFormDisabled] = useState(true);
 
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Shipment updated successfully',
+        });
+    }
+
     useEffect(() => {
         async function fetchData() {
             setShipment({});
-            //const response = await MyAPI.getData(someId);
+            if (!id) {
+                setFormDisabled(false);
+                return;
+            }
             const res = await axios.get(`http://localhost:8080/shipmentTracking/v1/shipmentTracking/${id}`);
             console.log(res.data);
+
             if (!ignore) {
                 setShipment(res.data);
             }
@@ -34,6 +48,7 @@ function ShipmentDetail() {
             const res = await axios.patch(`http://localhost:8080/shipmentTracking/v1/shipmentTracking/${id}`, shipment);
             console.log(res.data);
             setFormDisabled(true);
+            success();
         } catch (error) {
             console.log(error);
         }
@@ -80,8 +95,43 @@ function ShipmentDetail() {
         }));
     };
 
+    const handleOrderChange = (index, e) => {
+        const { name, value } = e.target;
+        setShipment(prevState => {
+            // Create a new copy of the order array
+            const newOrder = [...prevState.order];
+            // Update the specific order at the given index
+            newOrder[index] = {
+                ...newOrder[index],
+                [name]: value,
+            };
+            // Return the new shipment state with the updated order array
+            return {
+                ...prevState,
+                order: newOrder,
+            };
+        });
+        console.log(shipment.order);
+    }
+
+    const handleNewOrder = () => {
+        setShipment(prevState => ({
+            ...prevState,
+            order: [
+                ...(Array.isArray(prevState.order) ? prevState.order : []),
+                {
+                    id: '',
+                    href: '',
+                    name: '',
+                    referredType: '',
+                }
+            ]
+        }));
+    }
+
     return (
         <Form>
+        {contextHolder}
         <Layout hasSider
             style={{
                 paddingLeft: '100px',
@@ -115,8 +165,6 @@ function ShipmentDetail() {
                         </Form.Item>
                     )}
 
-                
-    
                     <Form.Item label="Carrier">
                         <Input name="carrier" value={shipment.carrier} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
@@ -127,7 +175,14 @@ function ShipmentDetail() {
                         <Input name="carrierTrackingUrl" value={shipment.carrierTrackingUrl} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Status">
-                        <Input name="status" value={shipment.status} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
+                        <Select name="status" value={shipment.status} onChange={handleInputChange} disabled={formDisabled} className="disabled-input">
+                            <Option value="initialized">Initialized</Option>
+                            <Option value="inProcess">In process</Option>
+                            <Option value="processed">Processed</Option>
+                            <Option value="shipped">Shipped</Option>
+                            <Option value="delivered">Delivered</Option>
+                            <Option value="returned">Returned</Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item label="Weight">
                         <InputNumber name="weight" value={shipment.weight} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
@@ -195,20 +250,23 @@ function ShipmentDetail() {
                     flexDirection: 'column',
                     gap: '30px',
                 }}>
-                {shipment.order?.map(order => (
+                {shipment.order?.map((order, index) => (
                     <Card key={order.id}>
                         <Form.Item label="Order link">
-                            <Input value={order.href} disabled={formDisabled} className="disabled-input"/>
+                            <Input name="href" value={order.href} onChange={(e) => handleOrderChange(index, e)} disabled={formDisabled} className="disabled-input"/>
                         </Form.Item>
                         <Form.Item label="Order name">
-                            <Input value={order.name} disabled={formDisabled} className="disabled-input"/>
+                            <Input name="name" value={order.name} onChange={(e) => handleOrderChange(index, e)} disabled={formDisabled} className="disabled-input"/>
                         </Form.Item>
                         <Form.Item label="Referred type">
-                            <Input value={order.referredType} disabled={formDisabled} className="disabled-input"/>
+                            <Input name="referredType" value={order.referredType} onChange={(e) => handleOrderChange(index, e)} disabled={formDisabled} className="disabled-input"/>
                         </Form.Item>
                     </Card>
                 ))}
                 </div>
+                <Button type="primary" onClick={handleNewOrder} style={{marginTop: 16}}>
+                    Add order
+                </Button>
             </Content>
             </Layout>
             
