@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button, Table } from "antd";
+import { Button, Table, Input, Select, Card } from "antd";
+import "./ShipmentTable.css";
+const { Option } = Select;
 
 
 function ShipmentTable() {
 
     const [shipments, setShipments] = useState([]);
+    const [customerSearch, setCustomerSearch] = useState('');
+    const [orderSearch, setOrderSearch] = useState('');
+    const [status, setStatus] = useState(null);
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
@@ -43,7 +48,7 @@ function ShipmentTable() {
             render: (customer) => customer.name,
         },
         {
-            title: 'Actions',
+            title: '',
             key: 'actions',
             render: (text, record) => (
                 <span>
@@ -58,9 +63,15 @@ function ShipmentTable() {
     useEffect(() => {
         async function fetchData() {
             setShipments([]);
+            const params = {
+                ...tableParams.pagination,
+                customerId: customerSearch,
+                orderId: orderSearch,
+                status: status,
+            }
             //const response = await MyAPI.getData(someId);
             const res = await axios.get('http://localhost:8080/shipmentTracking/v1/shipmentTracking', 
-                                    tableParams.pagination);
+                                    { params: params });
             if (!ignore) {
                 setShipments(res.data);
             }
@@ -68,7 +79,7 @@ function ShipmentTable() {
         let ignore = false;
         fetchData();
         return () => { ignore = true; }
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize, customerSearch, orderSearch, status]);
 
     const handleTableChange = (pagination) => {
         setTableParams({
@@ -78,19 +89,71 @@ function ShipmentTable() {
             }
         });
     }
+
+    const handleSearch = (e) => {
+        if (e.target.placeholder === 'Search by customer ID') {
+            setCustomerSearch(e.target.value);
+        }
+        if (e.target.placeholder === 'Search by order ID') {
+            setOrderSearch(e.target.value);
+        }
+    }
+
+    const handleStatusChange = (value) => {
+        setStatus(value);
+    }
     
     return (
         <div>
             <h1>Shipment List</h1>
-            <Button type="primary" style={{marginBottom: 16}}>
-                <Link to="/shipmentTracking/new">Create New Shipment</Link>
-            </Button>
+            <div className="search-components">
+                <Card
+                    title="Customer ID"
+                >
+                    <Input 
+                        placeholder="Search by customer ID"
+                        onChange={handleSearch}
+                        allowClear
+                    />
+                </Card>
+                
+                <Card
+                    title="Order ID"
+                >
+                    <Input 
+                        placeholder="Search by order ID"
+                        onChange={handleSearch}
+                        allowClear
+                    />
+                </Card>
+                
+                <Card
+                    title="Status"
+                >
+                    <Select
+                        placeholder="Filter by status"
+                        onChange={handleStatusChange}
+                        allowClear
+                    >
+                        <Option value="initialized">Initialized</Option>
+                        <Option value="inProcess">In process</Option>
+                        <Option value="processed">Processed</Option>
+                        <Option value="shipped">Shipped</Option>
+                        <Option value="delivered">Delivered</Option>
+                        <Option value="returned">Returned</Option>
+                    </Select>
+                </Card>
+            </div>
+            
             <Table
                 dataSource={shipments} 
                 rowKey="id"
                 columns={columns} 
                 pagination={{...tableParams.pagination, position: ['bottomCenter']}}
                 onChange={handleTableChange}/>
+            <Button type="primary" style={{marginBottom: 16}}>
+                <Link to="/shipmentTracking/new">Create New Shipment</Link>
+            </Button>
         </div>
     );
 }

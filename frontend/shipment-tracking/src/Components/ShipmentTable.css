@@ -1,0 +1,7 @@
+.search-components {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+    margin-left: 300px;
+    margin-right: 300px;
+}

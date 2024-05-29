@@ -29,6 +29,57 @@ function ShipmentDetail() {
         return () => { ignore = true; }
     }, [id]);
 
+    const saveData = async () => {
+        try {
+            const res = await axios.patch(`http://localhost:8080/shipmentTracking/v1/shipmentTracking/${id}`, shipment);
+            console.log(res.data);
+            setFormDisabled(true);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setShipment(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleAddressFromChange = (e) => {
+        const { name, value } = e.target;
+        setShipment(prevState => ({
+            ...prevState,
+            addressFrom: {
+                ...prevState.addressFrom,
+                [name]: value,
+            }
+        }));
+    };
+
+    const handleAddressToChange = (e) => {
+        const { name, value } = e.target;
+        setShipment(prevState => ({
+            ...prevState,
+            addressTo: {
+                ...prevState.addressTo,
+                [name]: value,
+            }
+        }));
+    };
+
+    const handleCustomerChange = (e) => {
+        const { name, value } = e.target;
+        setShipment(prevState => ({
+            ...prevState,
+            relatedCustomer: {
+                ...prevState.relatedCustomer,
+                [name]: value,
+            }
+        }));
+    };
+
     return (
         <Form>
         <Layout hasSider
@@ -50,37 +101,40 @@ function ShipmentDetail() {
                 paddingRight: '100px',
                 paddingTop: '20px',
                 }}
-                width='50vw'>
-
-                {formDisabled ? (
-                    <Button type="primary" onClick={() => setFormDisabled(false)} style={{marginBottom: 16}}>
-                        Edit
-                    </Button>
-                ) : (
-                    <Form.Item>
-                        <Button type="primary" onClick={() => setFormDisabled(true)} htmlType="submit">
-                            Save
+                width='50vw'
+                >
+                    {formDisabled ? (
+                        <Button type="primary" onClick={() => setFormDisabled(false)} style={{marginBottom: 16}}>
+                            Edit
                         </Button>
-                    </Form.Item>
-                )}
+                    ) : (
+                        <Form.Item>
+                            <Button type="primary" onClick={saveData} htmlType="submit">
+                                Save
+                            </Button>
+                        </Form.Item>
+                    )}
+
+                
     
                     <Form.Item label="Carrier">
-                        <Input value={shipment.carrier} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="carrier" value={shipment.carrier} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Tracking code">
-                        <Input value={shipment.trackingCode} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="trackingCode" value={shipment.trackingCode} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Carrier tracking URL">
-                        <Input value={shipment.carrierTrackingUrl} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="carrierTrackingUrl" value={shipment.carrierTrackingUrl} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Status">
-                        <Input value={shipment.status} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="status" value={shipment.status} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Weight">
-                        <InputNumber value={shipment.weight} disabled={formDisabled} className="disabled-input"/>
+                        <InputNumber name="weight" value={shipment.weight} onChange={handleInputChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Estimated delivery date">
                         <DatePicker
+                                    name="estimatedDeliveryDate"
                                     defaultValue={dayjs(shipment.estimatedDeliveryDate)}
                                     format="YYYY/MM/DD"
                                     disabled={formDisabled}
@@ -90,43 +144,43 @@ function ShipmentDetail() {
 
                     <Title level={4}>Address from</Title>
                     <Form.Item label="Street number">
-                        <Input value={shipment.addressFrom?.streetNr} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="streetNr" value={shipment.addressFrom?.streetNr} onChange={handleAddressFromChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Street name">
-                        <Input value={shipment.addressFrom?.streetName} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="streetName" value={shipment.addressFrom?.streetName} onChange={handleAddressFromChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="City">
-                        <Input value={shipment.addressFrom?.city} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="city" value={shipment.addressFrom?.city} onChange={handleAddressFromChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Country">
-                        <Input value={shipment.addressFrom?.country} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="country" value={shipment.addressFrom?.country} onChange={handleAddressFromChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Postal code">
-                        <Input value={shipment.addressFrom?.postcode} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="postcode" value={shipment.addressFrom?.postcode} onChange={handleAddressFromChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
 
                     <Title level={4}>Address to</Title>
                     <Form.Item label="Street number">
-                        <Input value={shipment.addressTo?.streetNr} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="streetNr" value={shipment.addressTo?.streetNr} onChange={handleAddressToChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Street name">
-                        <Input value={shipment.addressTo?.streetName} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="streetName" value={shipment.addressTo?.streetName} onChange={handleAddressToChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="City">
-                        <Input value={shipment.addressTo?.city} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="city" value={shipment.addressTo?.city} onChange={handleAddressToChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Country">
-                        <Input value={shipment.addressTo?.country} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="country" value={shipment.addressTo?.country} onChange={handleAddressToChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Postal code">
-                        <Input value={shipment.addressTo?.postcode} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="postcode" value={shipment.addressTo?.postcode} onChange={handleAddressToChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Title level={4}>Customer</Title>
                     <Form.Item label="Customer name">
-                        <Input value={shipment.relatedCustomer?.name} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="name" value={shipment.relatedCustomer?.name} onChange={handleCustomerChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
                     <Form.Item label="Customer link">
-                        <Input value={shipment.relatedCustomer?.href} disabled={formDisabled} className="disabled-input"/>
+                        <Input name="href" value={shipment.relatedCustomer?.href} onChange={handleCustomerChange} disabled={formDisabled} className="disabled-input"/>
                     </Form.Item>
             </Sider>
             <Layout
