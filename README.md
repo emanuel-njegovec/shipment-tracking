@@ -1,6 +1,6 @@
-**Simple frontend user interface for tracking shipments.**
-Made for HT internship application.
-It allows the user to create new shipments and their orders, as well as editing existing shipments. Additionally it provides a filtering feature for finding entires based on customer ID, order ID and order status.
+**Simple frontend user interface for tracking shipments.**<br>
+Made for HT internship application.<br>
+It allows the user to create new shipments and their orders, as well as editing existing shipments. Additionally it provides a filtering feature for finding entires based on customer ID, order ID and order status.<br>
 Features which are currently not implemented but would greatly improve the usability: deleting entire shipments, deleting individual orders, expanded search/filter, customizability of data displayed in the table.
 
 How to run:
