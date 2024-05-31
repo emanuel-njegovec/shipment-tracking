@@ -78,8 +78,6 @@ function ShipmentTable() {
                 orderId: orderSearch,
                 status: status,
             }
-            console.log(params);
-            //const response = await MyAPI.getData(someId);
             const res = await axios.get('http://localhost:8080/shipmentTracking/v1/shipmentTracking', 
                                     { params: params });
             if (!ignore) {

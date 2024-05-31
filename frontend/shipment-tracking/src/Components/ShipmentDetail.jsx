@@ -32,7 +32,6 @@ function ShipmentDetail() {
                 return;
             }
             const res = await axios.get(`http://localhost:8080/shipmentTracking/v1/shipmentTracking/${id}`);
-            console.log(res.data);
 
             if (!ignore) {
                 setShipment(res.data);
@@ -46,9 +45,7 @@ function ShipmentDetail() {
     const saveData = async () => {
         if (!id) {
             try {
-                console.log(shipment);
                 const res = await axios.post('http://localhost:8080/shipmentTracking/v1/shipmentTracking', shipment);
-                console.log(res.data);
                 setFormDisabled(true);
                 success();
             } catch (error) {
@@ -57,9 +54,7 @@ function ShipmentDetail() {
         }
         else {
             try {
-                console.log(shipment);
                 const res = await axios.patch(`http://localhost:8080/shipmentTracking/v1/shipmentTracking/${id}`, shipment);
-                console.log(res.data);
                 setFormDisabled(true);
                 success();
             } catch (error) {
@@ -129,7 +124,6 @@ function ShipmentDetail() {
                 order: newOrder,
             };
         });
-        console.log(shipment.order);
     }
 
     const handleNewOrder = () => {

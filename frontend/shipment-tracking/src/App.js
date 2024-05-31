@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import ShipmentTable from './Components/ShipmentTable';
 
+import ShipmentTable from './Components/ShipmentTable';
 import ShipmentDetail from './Components/ShipmentDetail';
 
 function App() {
