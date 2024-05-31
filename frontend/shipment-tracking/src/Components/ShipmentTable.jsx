@@ -40,7 +40,7 @@ function ShipmentTable() {
             key: 'status',
         },
         {
-            title: 'Order ID',
+            title: 'Orders',
             dataIndex: 'order',
             key: 'order',
             render: (order) => order.map(o => o.name).join(', '),
@@ -78,6 +78,7 @@ function ShipmentTable() {
                 orderId: orderSearch,
                 status: status,
             }
+            console.log(params);
             //const response = await MyAPI.getData(someId);
             const res = await axios.get('http://localhost:8080/shipmentTracking/v1/shipmentTracking', 
                                     { params: params });
@@ -88,7 +89,7 @@ function ShipmentTable() {
         let ignore = false;
         fetchData();
         return () => { ignore = true; }
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize, customerSearch, orderSearch, status]);
+    }, [tableParams.pagination, customerSearch, orderSearch, status]);
 
     const handleTableChange = (pagination) => {
         setTableParams({
